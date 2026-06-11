@@ -9,4 +9,13 @@
 
 void iniciarJuego();
 
+int validarMovimiento(
+    char* mapa,
+    int columnas,
+    int fila,
+    int columna
+);
+
+void moverJugador(char tecla);
+
 #endif

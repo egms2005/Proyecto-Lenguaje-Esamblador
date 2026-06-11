@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include "juego.h"
 
 char mapa[FILAS][COLUMNAS];
@@ -65,10 +67,60 @@ void mostrarVentana(){
     }
 }
 
+void moverJugador(char tecla){
+    int nuevaFila = fJugador;
+    int nuevaColumna = cJugador;
+
+    tecla= tolower(tecla);
+
+    if(tecla == 'w'){
+        nuevaFila--;
+    }
+
+    else if(tecla == 's'){
+        nuevaFila++;
+    }
+
+    else if(tecla == 'a'){
+        nuevaColumna--;
+    }
+
+    else if(tecla == 'd'){
+        nuevaColumna++;
+    }
+
+    if(!validarMovimiento(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna)){
+        return;
+    }
+
+    mapa[fJugador][cJugador]= '.';
+
+    fJugador= nuevaFila;
+    cJugador= nuevaColumna;
+
+    mapa[fJugador][cJugador]= 'P';
+}
+
 void iniciarJuego(){
+    char tecla;
+
     iniciarMapa();
 
-    printf("BitQuest iniciado\n");
+    while(1){
+        system("cls");
 
-    mostrarVentana();
+        mostrarVentana();
+
+        printf("\nW A S D mover\n");
+        printf("Q salir\n");
+
+        scanf(" %c", &tecla);
+
+        if(tecla == 'q' || tecla == 'Q')
+        {
+            break;
+        }
+
+        moverJugador(tecla);
+    }
 }
