@@ -12,6 +12,9 @@ int cJugador= 5;
 
 int nivelActual= 1;
 
+int monedasRec= 0;
+int tieneLlave= 0;
+
 void iniciarMapa(){
     int i, j;
 
@@ -76,7 +79,7 @@ void moverJugador(char tecla){
     int nuevaColumna = cJugador;
 
     tecla= tolower(tecla);
-
+    
     if(tecla == 'w'){
         nuevaFila--;
     }
@@ -91,6 +94,18 @@ void moverJugador(char tecla){
 
     else if(tecla == 'd'){
         nuevaColumna++;
+    }
+
+    if(detectarObjeto(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna,'M')){
+            monedasRec++;
+
+            mapa[nuevaFila][nuevaColumna]= '.';
+        }
+    
+    if(detectarObjeto(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna,'K')){
+        tieneLlave= 1;
+
+        mapa[nuevaFila][nuevaColumna]= '.';
     }
 
     if(!validarMovimiento(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna)){
@@ -108,10 +123,8 @@ void moverJugador(char tecla){
 void cargarNivel(int nivel){
     int i, j;
 
-    for(i=0; i<FILAS; i++)
-    {
-        for(j =0; j<COLUMNAS; j++)
-        {
+    for(i=0; i<FILAS; i++){
+        for(j =0; j<COLUMNAS; j++){
             if(nivel == 1){
                 mapa[i][j]= nivel1[i][j];
             }
@@ -130,6 +143,13 @@ void cargarNivel(int nivel){
             }
         }
     }
+
+    int monedas;
+
+    monedas= contarCaracter(&mapa[0][0], FILAS * COLUMNAS, 'M');
+    
+    printf("Monedas en el nivel: %d\n", monedas);
+
 }
 
 void iniciarJuego(){
@@ -141,9 +161,12 @@ void iniciarJuego(){
         system("cls");
 
         mostrarVentana();
+        
+        printf("\nMonedas: %d", monedasRec);
+        printf("\nLlave: %s", tieneLlave ? "SI" : "NO");
 
-        printf("\nW A S D mover\n");
-        printf("Q salir\n");
+        printf("\n\nW= Arriba | A: Izquierda | S: Abajo | D: Derecha\n");
+        printf("Q: Salir\n");
 
         scanf(" %c", &tecla);
 

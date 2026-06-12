@@ -20,4 +20,18 @@ void moverJugador(char tecla);
 
 void cargarNivel(int nivel);
 
+int contarCaracter(
+    char* mapa,
+    int totalCeldas,
+    char caracter
+);
+
+int detectarObjeto(
+    char* mapa,
+    int columnas,
+    int fila,
+    int columna,
+    char objeto
+);
+
 #endif
