@@ -1,12 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+
 #include "juego.h"
+#include "mapas.h"
 
 char mapa[FILAS][COLUMNAS];
 
 int fJugador= 5;
 int cJugador= 5;
+
+int nivelActual= 1;
 
 void iniciarMapa(){
     int i, j;
@@ -101,10 +105,37 @@ void moverJugador(char tecla){
     mapa[fJugador][cJugador]= 'P';
 }
 
+void cargarNivel(int nivel){
+    int i, j;
+
+    for(i=0; i<FILAS; i++)
+    {
+        for(j =0; j<COLUMNAS; j++)
+        {
+            if(nivel == 1){
+                mapa[i][j]= nivel1[i][j];
+            }
+
+            else if(nivel == 2){
+                mapa[i][j]= nivel2[i][j];
+            }
+
+            else if(nivel == 3){
+                mapa[i][j]= nivel3[i][j];
+            }
+
+            if(mapa[i][j] == 'P'){
+                fJugador= i;
+                cJugador= j;
+            }
+        }
+    }
+}
+
 void iniciarJuego(){
     char tecla;
 
-    iniciarMapa();
+    cargarNivel(nivelActual);
 
     while(1){
         system("cls");

@@ -18,4 +18,6 @@ int validarMovimiento(
 
 void moverJugador(char tecla);
 
+void cargarNivel(int nivel);
+
 #endif
