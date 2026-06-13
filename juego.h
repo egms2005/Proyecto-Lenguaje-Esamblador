@@ -34,4 +34,15 @@ int detectarObjeto(
     char objeto
 );
 
+int contarCeldasLib(
+    char* mapa,
+    int totalCeldas
+);
+
+int calcularPuntaje(
+    int monedas,
+    int pasos,
+    int niveles
+);
+
 #endif

@@ -4,6 +4,8 @@ default rel
 global validarMovimiento
 global contarCaracter
 global detectarObjeto
+global contarCeldasLib
+global calcularPuntaje
 
 section .text
 
@@ -14,9 +16,9 @@ validarMovimiento:
 
     movsxd rax, eax
 
-    mov bl, [rcx + rax]
+    mov r10b, [rcx + rax]
 
-    cmp bl, '#'
+    cmp r10b, '#'
     je .bloqueado
 
     mov eax, 1
@@ -26,27 +28,29 @@ validarMovimiento:
     mov eax, 0
     ret
 
+
 contarCaracter:
-    xor eax, eax      
-    xor r9d, r9d      
+    xor eax, eax
+    xor r9d, r9d
 
-.bucle:
+.loop_car:
     cmp r9d, edx
-    jge .fin
+    jge .fin_car
 
-    mov bl, [rcx + r9]
+    mov r10b, [rcx + r9]
 
-    cmp bl, r8b
+    cmp r10b, r8b
     jne .siguiente
 
     inc eax
 
 .siguiente:
     inc r9d
-    jmp .bucle
+    jmp .loop_car
 
-.fin:
+.fin_car:
     ret
+
 
 detectarObjeto:
     mov eax, r8d
@@ -55,16 +59,54 @@ detectarObjeto:
 
     movsxd rax, eax
 
-    mov bl, [rcx + rax]
+    mov r10b, [rcx + rax]
 
-    mov dl, [rsp + 40]
+    mov r11b, [rsp + 40]
 
-    cmp bl, dl
+    cmp r10b, r11b
     je .encontrado
 
     mov eax, 0
     ret
 
-    .encontrado:
+.encontrado:
     mov eax, 1
+    ret
+
+
+contarCeldasLib:
+    xor eax, eax
+    xor r8d, r8d
+
+.loop_con:
+    cmp r8d, edx
+    jge .fin_con
+
+    mov r10b, [rcx + r8]
+
+    cmp r10b, '.'
+    jne .siguiente
+
+    inc eax
+
+.siguiente:
+    inc r8d
+    jmp .loop_con
+
+.fin_con:
+    ret
+
+calcularPuntaje:
+
+    mov eax, ecx
+
+    imul eax, 100
+
+    mov r9d, r8d
+    imul r9d, 500
+
+    add eax, r9d
+
+    sub eax, edx
+
     ret

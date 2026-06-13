@@ -15,6 +15,9 @@ int nivelActual= 1;
 int monedasRec= 0;
 int tieneLlave= 0;
 
+int pasos= 0;
+int nivelesComp= 0;
+
 void iniciarMapa(){
     int i, j;
 
@@ -96,6 +99,10 @@ void moverJugador(char tecla){
         nuevaColumna++;
     }
 
+    if(!validarMovimiento(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna)){
+        return;
+    }
+
     if(detectarObjeto(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna,'M')){
             monedasRec++;
 
@@ -108,16 +115,16 @@ void moverJugador(char tecla){
         mapa[nuevaFila][nuevaColumna]= '.';
     }
 
-    if(!validarMovimiento(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna)){
-        return;
-    }
-
     mapa[fJugador][cJugador]= '.';
 
     fJugador= nuevaFila;
     cJugador= nuevaColumna;
 
+    pasos++;
+
     mapa[fJugador][cJugador]= 'P';
+
+    
 }
 
 void cargarNivel(int nivel){
@@ -144,10 +151,17 @@ void cargarNivel(int nivel){
         }
     }
 
+    int libres;
     int monedas;
+
+    libres= contarCeldasLib(
+        &mapa[0][0],
+        FILAS * COLUMNAS
+    );
 
     monedas= contarCaracter(&mapa[0][0], FILAS * COLUMNAS, 'M');
     
+    printf("Celdas libres: %d\n", libres);
     printf("Monedas en el nivel: %d\n", monedas);
 
 }
@@ -170,8 +184,7 @@ void iniciarJuego(){
 
         scanf(" %c", &tecla);
 
-        if(tecla == 'q' || tecla == 'Q')
-        {
+        if(tecla == 'q' || tecla == 'Q'){
             break;
         }
 
