@@ -62,6 +62,7 @@ detectarObjeto:
     mov r10b, [rcx + rax]
 
     mov r11b, [rsp + 40]
+    cmp r10b, r11b
 
     cmp r10b, r11b
     je .encontrado

@@ -115,6 +115,17 @@ void moverJugador(char tecla){
         mapa[nuevaFila][nuevaColumna]= '.';
     }
 
+    if(detectarObjeto(&mapa[0][0], COLUMNAS, nuevaFila, nuevaColumna, 'D')){
+        if(!tieneLlave){
+            printf("\nNecesitas una llave\n");
+            return;
+        }
+    }
+
+    char objetoDestino;
+
+    objetoDestino= mapa[nuevaFila][nuevaColumna];  
+
     mapa[fJugador][cJugador]= '.';
 
     fJugador= nuevaFila;
@@ -124,7 +135,45 @@ void moverJugador(char tecla){
 
     mapa[fJugador][cJugador]= 'P';
 
-    
+    if(objetoDestino == 'E'){
+        printf("\nNivel completado\n");
+
+         nivelesComp++;
+
+        int puntaje;
+
+        puntaje= calcularPuntaje(monedasRec, pasos, nivelesComp);
+
+        printf("\n===== Resumen del nivel =====\n");
+        printf("Monedas recolectadas: %d\n", monedasRec);
+        printf("Pasos realizados: %d\n", pasos);
+        printf("Niveles completados: %d\n", nivelesComp);
+        printf("Puntaje actual: %d\n", puntaje);
+        printf("============================\n");
+
+        system("pause");
+
+        nivelActual++;
+
+        if(nivelActual <= 3){
+            tieneLlave= 0;
+            cargarNivel(nivelActual);
+        
+        }else{
+            int puntajeFinal;
+
+            puntajeFinal= calcularPuntaje(monedasRec, pasos, nivelesComp);
+
+            printf("\n===== Juego completado =====\n");
+            printf("Monedas recolectadas: %d\n", monedasRec);
+            printf("Pasos realizados: %d\n", pasos);
+            printf("Niveles completados: %d\n", nivelesComp);
+            printf("Puntaje final: %d\n", puntajeFinal);
+            printf("============================\n");
+
+            system("pause");
+            }
+    }
 }
 
 void cargarNivel(int nivel){
@@ -154,10 +203,7 @@ void cargarNivel(int nivel){
     int libres;
     int monedas;
 
-    libres= contarCeldasLib(
-        &mapa[0][0],
-        FILAS * COLUMNAS
-    );
+    libres= contarCeldasLib(&mapa[0][0],FILAS * COLUMNAS);
 
     monedas= contarCaracter(&mapa[0][0], FILAS * COLUMNAS, 'M');
     

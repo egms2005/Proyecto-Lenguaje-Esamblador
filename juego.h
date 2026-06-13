@@ -31,7 +31,7 @@ int detectarObjeto(
     int columnas,
     int fila,
     int columna,
-    char objeto
+    int objeto
 );
 
 int contarCeldasLib(
