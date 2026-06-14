@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <conio.h>
 
 #include "juego.h"
 #include "mapas.h"
@@ -12,7 +13,10 @@ int cJugador= 5;
 
 int nivelActual= 1;
 
+int monedasNivel= 0;
+int monedasNivelRec= 0;
 int monedasRec= 0;
+int monedasTotal= 0;
 int tieneLlave= 0;
 
 int pasos= 0;
@@ -105,6 +109,7 @@ void moverJugador(char tecla){
 
     if(detectarObjeto(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna,'M')){
             monedasRec++;
+            monedasNivelRec++;
 
             mapa[nuevaFila][nuevaColumna]= '.';
         }
@@ -141,38 +146,50 @@ void moverJugador(char tecla){
          nivelesComp++;
 
         int puntaje;
+        char opc;
 
         puntaje= calcularPuntaje(monedasRec, pasos, nivelesComp);
 
         printf("\n===== Resumen del nivel =====\n");
-        printf("Monedas recolectadas: %d\n", monedasRec);
-        printf("Pasos realizados: %d\n", pasos);
+        printf("Monedas recolectadas: %d\nMonedas en el nivel: %d\n", monedasNivelRec, monedasNivel);
+        printf("Pasos realizados hasta ahora: %d\n", pasos);
         printf("Niveles completados: %d\n", nivelesComp);
         printf("Puntaje actual: %d\n", puntaje);
-        printf("============================\n");
+        printf("=============================\n");
 
-        system("pause");
+        do{
+            printf("Presione c para continuar...\n");
+            scanf(" %c", &opc);
 
+        }while(opc != 'c' && opc != 'C');
+        
         nivelActual++;
 
         if(nivelActual <= 3){
-            tieneLlave= 0;
-            cargarNivel(nivelActual);
-        
+                tieneLlave= 0;
+                monedasNivelRec= 0;
+                cargarNivel(nivelActual);
+            
         }else{
             int puntajeFinal;
 
             puntajeFinal= calcularPuntaje(monedasRec, pasos, nivelesComp);
 
             printf("\n===== Juego completado =====\n");
-            printf("Monedas recolectadas: %d\n", monedasRec);
-            printf("Pasos realizados: %d\n", pasos);
+            printf("Monedas recolectadas: %d\nMonedas totales: %d\n", monedasRec, monedasTotal);
+            printf("Pasos realizados totales: %d\n", pasos);
             printf("Niveles completados: %d\n", nivelesComp);
             printf("Puntaje final: %d\n", puntajeFinal);
             printf("============================\n");
 
-            system("pause");
-            }
+            do{
+                printf("Presione c para terminar el juego...\n");
+                scanf(" %c", &opc);
+
+            }while(opc != 'c' && opc != 'C');
+
+            exit(0);
+        }
     }
 }
 
@@ -201,14 +218,15 @@ void cargarNivel(int nivel){
     }
 
     int libres;
-    int monedas;
 
     libres= contarCeldasLib(&mapa[0][0],FILAS * COLUMNAS);
 
-    monedas= contarCaracter(&mapa[0][0], FILAS * COLUMNAS, 'M');
+    monedasNivel= contarCaracter(&mapa[0][0], FILAS * COLUMNAS, 'M');
     
+    monedasTotal+= monedasNivel;
+
     printf("Celdas libres: %d\n", libres);
-    printf("Monedas en el nivel: %d\n", monedas);
+    printf("Monedas en el nivel: %d\n", monedasNivel);
 
 }
 
@@ -221,14 +239,14 @@ void iniciarJuego(){
         system("cls");
 
         mostrarVentana();
-        
-        printf("\nMonedas: %d", monedasRec);
-        printf("\nLlave: %s", tieneLlave ? "SI" : "NO");
 
-        printf("\n\nW= Arriba | A: Izquierda | S: Abajo | D: Derecha\n");
+        printf("\nMonedas: %d/%d", monedasNivelRec, monedasNivel);
+        printf("\nLlave: %s", tieneLlave ? "Si" : "No");
+
+        printf("\n\nW: Arriba | A: Izquierda | S: Abajo | D: Derecha\n");
         printf("Q: Salir\n");
 
-        scanf(" %c", &tecla);
+        tecla = getch();
 
         if(tecla == 'q' || tecla == 'Q'){
             break;
