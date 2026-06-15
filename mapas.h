@@ -1,6 +1,21 @@
 #ifndef MAPAS_H
 #define MAPAS_H
 
+/*
+    Aqui se almacenan los mapas de los tres niveles del 
+    juego. Cada mapa esta formado por una matriz de 60 
+    filas y 61 columnas. Simbolos usados: 
+    # = Pared
+    . = Camino libre
+    P = Posicion del jugador
+    M = Moneda
+    D = Puerta
+    E = Salida del nivel
+*/
+
+/*
+    Primer nivel, dificultad: Facil.
+*/
 char nivel1[60][61]= {
     "###########################################################",
     "#P...........................#................D..........E#",
@@ -64,6 +79,9 @@ char nivel1[60][61]= {
     "###########################################################"
 };
 
+/*
+    Segundo nivel, dificultad: Intermedia.
+*/
 char nivel2[60][61]= {
     "###########################################################",
     "#P........................................................#",
@@ -127,6 +145,9 @@ char nivel2[60][61]= {
     "###########################################################"
 };
 
+/*
+    Tercer nivel, dificultad: Dificil.
+*/
 char nivel3[60][61]= {
     "###########################################################",
     "#P........................................................#",

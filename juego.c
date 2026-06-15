@@ -6,46 +6,32 @@
 #include "juego.h"
 #include "mapas.h"
 
+//Matriz principal donde se almacena el mapa actual
 char mapa[FILAS][COLUMNAS];
 
+//Variables para la posicion del jugador
 int fJugador= 5;
 int cJugador= 5;
 
 int nivelActual= 1;
 
+//Variables para el control de monedas
 int monedasNivel= 0;
 int monedasNivelRec= 0;
 int monedasRec= 0;
 int monedasTotal= 0;
+
 int tieneLlave= 0;
 
+//Estadisticas generales del juego
 int pasos= 0;
 int nivelesComp= 0;
 
-void iniciarMapa(){
-    int i, j;
-
-    for(i=0; i<FILAS; i++){
-        for(j = 0; j < COLUMNAS; j++)
-        {
-            mapa[i][j] = '.';
-        }
-    }
-
-    for(i=0; i<FILAS; i++){
-        mapa[i][0]= '#';
-        mapa[i][COLUMNAS-1]= '#';
-    }
-
-    for(j=0; j<COLUMNAS; j++)
-    {
-        mapa[0][j]= '#';
-        mapa[FILAS-1][j]= '#';
-    }
-
-    mapa[fJugador][cJugador]= 'P';
-}
-
+/*
+    Funcion para mostrar una ventana de 20x20
+    centrada alrededor de la posicion actual
+    del juegador.
+*/
 void mostrarVentana(){
     int inicioFila;
     int inicioColumna;
@@ -56,6 +42,7 @@ void mostrarVentana(){
     inicioFila= fJugador - 10;
     inicioColumna= cJugador - 10;
 
+    //Evita que la ventana salga por arriba o la izquierda
     if(inicioFila < 0){
         inicioFila= 0;
     }
@@ -64,6 +51,7 @@ void mostrarVentana(){
         inicioColumna= 0;
     }
 
+    //Evita que la ventana salga por abajo o la derecha
     if(inicioFila > FILAS - VENTANA_FILAS){
         inicioFila= FILAS - VENTANA_FILAS;
     }
@@ -72,6 +60,7 @@ void mostrarVentana(){
         inicioColumna= COLUMNAS - VENTANA_COLUMNAS;
     }
 
+    //Imprime la seccion visible del mapa
     for(i= inicioFila; i<inicioFila + VENTANA_FILAS; i++){
         for(j = inicioColumna; j < inicioColumna + VENTANA_COLUMNAS; j++){
             printf("%c", mapa[i][j]);
@@ -81,12 +70,21 @@ void mostrarVentana(){
     }
 }
 
+/*
+    Funcion para procesar el movimiento del jugador, 
+    validar colisiones, recoger monedas y detectar la
+    finalizacion de un nivel y del juego.
+*/
 void moverJugador(char tecla){
     int nuevaFila = fJugador;
     int nuevaColumna = cJugador;
 
     tecla= tolower(tecla);
     
+    /*
+        Seccion para determinar la nueva posicion segun
+        la tecla presionada.
+    */
     if(tecla == 'w'){
         nuevaFila--;
     }
@@ -102,11 +100,13 @@ void moverJugador(char tecla){
     else if(tecla == 'd'){
         nuevaColumna++;
     }
-
+    
+    //Verifica que el movimiento sea valido
     if(!validarMovimiento(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna)){
         return;
     }
 
+    //Recoleccion de monedas
     if(detectarObjeto(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna,'M')){
             monedasRec++;
             monedasNivelRec++;
@@ -114,12 +114,14 @@ void moverJugador(char tecla){
             mapa[nuevaFila][nuevaColumna]= '.';
         }
     
+    //Recoleccion de la llave
     if(detectarObjeto(&mapa[0][0],COLUMNAS,nuevaFila,nuevaColumna,'K')){
         tieneLlave= 1;
 
         mapa[nuevaFila][nuevaColumna]= '.';
     }
 
+    //Validacion de la puerta
     if(detectarObjeto(&mapa[0][0], COLUMNAS, nuevaFila, nuevaColumna, 'D')){
         if(!tieneLlave){
             printf("\nNecesitas una llave\n");
@@ -129,8 +131,10 @@ void moverJugador(char tecla){
 
     char objetoDestino;
 
+    //Guarda el contenido de la celda destino
     objetoDestino= mapa[nuevaFila][nuevaColumna];  
 
+    //Actualiza la posicion del jugador
     mapa[fJugador][cJugador]= '.';
 
     fJugador= nuevaFila;
@@ -140,6 +144,7 @@ void moverJugador(char tecla){
 
     mapa[fJugador][cJugador]= 'P';
 
+    //Verifica si se alcanzo la salida
     if(objetoDestino == 'E'){
         printf("\nNivel completado\n");
 
@@ -147,9 +152,11 @@ void moverJugador(char tecla){
 
         int puntaje;
         char opc;
-
+        
+        //Llama a la rutina para calcular el puntaje
         puntaje= calcularPuntaje(monedasRec, pasos, nivelesComp);
-
+        
+        //Resumen del nivel
         printf("\n===== Resumen del nivel =====\n");
         printf("Monedas recolectadas: %d\nMonedas en el nivel: %d\n", monedasNivelRec, monedasNivel);
         printf("Pasos realizados hasta ahora: %d\n", pasos);
@@ -165,6 +172,7 @@ void moverJugador(char tecla){
         
         nivelActual++;
 
+        //Carga el nivel si existe
         if(nivelActual <= 3){
                 tieneLlave= 0;
                 monedasNivelRec= 0;
@@ -175,6 +183,7 @@ void moverJugador(char tecla){
 
             puntajeFinal= calcularPuntaje(monedasRec, pasos, nivelesComp);
 
+            //Resumen final del juego
             printf("\n===== Juego completado =====\n");
             printf("Monedas recolectadas: %d\nMonedas totales: %d\n", monedasRec, monedasTotal);
             printf("Pasos realizados totales: %d\n", pasos);
@@ -193,6 +202,11 @@ void moverJugador(char tecla){
     }
 }
 
+/*
+    Funcion para cargar uno de los mapas definidos 
+    en mapas.h y obtener la informacion del nivel
+    mediante las funciones implementadas en NASM.
+*/
 void cargarNivel(int nivel){
     int i, j;
 
@@ -210,6 +224,7 @@ void cargarNivel(int nivel){
                 mapa[i][j]= nivel3[i][j];
             }
 
+            //Busca la posicion inicial del jugador
             if(mapa[i][j] == 'P'){
                 fJugador= i;
                 cJugador= j;
@@ -219,16 +234,25 @@ void cargarNivel(int nivel){
 
     int libres;
 
+    //Cuenta las celdas libres del nivel usando la rutina en NASM
     libres= contarCeldasLib(&mapa[0][0],FILAS * COLUMNAS);
 
+    //Cuenta las monedas del nivel usando la rutina en NASM
     monedasNivel= contarCaracter(&mapa[0][0], FILAS * COLUMNAS, 'M');
     
     monedasTotal+= monedasNivel;
 
-    printf("Celdas libres: %d\n", libres);
+    printf("Celdas libres en el nivel: %d\n", libres);
     printf("Monedas en el nivel: %d\n", monedasNivel);
 
+    system("pause");
+
 }
+
+/*
+    Funcion principal del juego, controla el ciclo
+    de ejecucion y la lectura de teclas del jugador.
+*/
 
 void iniciarJuego(){
     char tecla;
